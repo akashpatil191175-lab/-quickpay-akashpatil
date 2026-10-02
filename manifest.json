@@ -2,21 +2,23 @@
   "name": "QuickPay - Akash Patil Solution",
   "short_name": "QuickPay",
   "description": "QuickPay mobile payment application",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
+  "id": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#050b1d",
-  "theme_color": "#050b1d",
+  "background_color": "#08071a",
+  "theme_color": "#5b2cd2",
   "icons": [
     {
-      "src": "logo-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
