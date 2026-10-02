@@ -8,8 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#050b1d" />
-  <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png" />
-  <link rel="apple-touch-icon" href="logo-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -70,39 +70,230 @@
       scrollbar-width: none;  /* Firefox */
     }
   </style>
+
+  <style>
+    /* ================================
+       QUICKPAY PREMIUM MOBILE UI
+       ================================ */
+    html, body { min-height: 100%; }
+    body { background:#f7f7fb; color:#17183b; padding-bottom:92px; }
+
+    /* Authentication gate */
+    body:not(.auth-ready) { visibility:hidden; }
+    body.auth-locked .app-ui { display:none !important; }
+    body.auth-locked { background:#08071a; padding-bottom:0; overflow:hidden; }
+    .auth-screen {
+      position:fixed; inset:0; z-index:9999; min-height:100dvh;
+      display:flex; align-items:center; justify-content:center;
+      padding:20px; overflow-y:auto;
+      background:
+        radial-gradient(circle at 15% 10%,rgba(119,74,255,.45),transparent 32%),
+        radial-gradient(circle at 90% 85%,rgba(0,242,254,.12),transparent 28%),
+        #08071a;
+    }
+    .auth-screen.hidden { display:none !important; }
+    .auth-backdrop { position:absolute; inset:0; pointer-events:none; }
+    .auth-card {
+      position:relative; width:min(430px,100%); border-radius:32px;
+      padding:30px 24px 26px; background:rgba(18,17,45,.92);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 30px 80px rgba(0,0,0,.55); backdrop-filter:blur(24px);
+    }
+    .auth-close { display:none !important; }
+    .auth-card img {
+      width:82px !important; height:82px !important; border-radius:24px !important;
+      margin-bottom:16px !important; box-shadow:0 16px 40px rgba(102,69,255,.35);
+    }
+    .auth-card h3 { font-size:28px !important; letter-spacing:-.03em; }
+    .auth-card input { min-height:54px; background:#0c0b20 !important; border-color:#2c2a50 !important; }
+    .auth-card button:not(.auth-close) { min-height:52px; border-radius:16px; }
+
+    /* Header */
+    .premium-header {
+      position:sticky; top:0; z-index:40; background:rgba(248,248,252,.94);
+      border-bottom:1px solid #ececf5; backdrop-filter:blur(20px);
+    }
+    .premium-header-inner {
+      width:min(760px,100%); margin:auto; min-height:74px; padding:10px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand-area { display:flex; align-items:center; gap:10px; border:0; background:none; padding:0; cursor:pointer; text-align:left; }
+    .brand-logo { width:44px; height:44px; object-fit:contain; border-radius:13px; box-shadow:0 6px 18px rgba(73,45,220,.15); }
+    .brand-copy { display:flex; flex-direction:column; line-height:1.05; }
+    .brand-copy strong { font-size:20px; font-weight:900; color:#11133e; letter-spacing:-.04em; }
+    .brand-copy small { margin-top:4px; font-size:8px; letter-spacing:.16em; font-weight:800; color:#85859a; }
+    .header-actions { display:flex; align-items:center; gap:10px; }
+    .icon-btn {
+      width:46px; height:46px; border-radius:50%; border:1px solid #e6e5ef; background:#fff;
+      color:#20204a; display:grid; place-items:center; position:relative;
+      box-shadow:0 7px 18px rgba(33,27,89,.08); cursor:pointer;
+    }
+    .icon-btn:active,.profile-avatar:active,.quick-card:active,.hero-cta:active { transform:scale(.97); }
+    .notification-dot {
+      position:absolute; top:6px; right:6px; min-width:10px; height:10px; padding:0;
+      border-radius:50%; background:#ff315a; border:2px solid #fff; color:transparent;
+    }
+    .profile-avatar {
+      width:46px; height:46px; border:0; border-radius:50%; cursor:pointer; color:#fff;
+      font-weight:900; font-size:14px; background:linear-gradient(135deg,#6b39ff,#8f4cff);
+      box-shadow:0 8px 22px rgba(101,61,244,.3);
+    }
+
+    /* Home */
+    .premium-home { width:min(760px,100%); margin:0 auto; padding:14px 18px 20px; color:#17183b; }
+    .premium-hero {
+      min-height:330px; position:relative; overflow:hidden; border-radius:28px; padding:25px 22px;
+      display:flex; align-items:center;
+      background:radial-gradient(circle at 85% 35%,rgba(255,255,255,.16),transparent 25%),
+                 linear-gradient(135deg,#4a17dc 0%,#6132f4 48%,#2d1a9f 100%);
+      box-shadow:0 18px 38px rgba(74,28,190,.28); color:#fff;
+    }
+    .premium-hero:after {
+      content:""; position:absolute; inset:auto -80px -110px auto; width:280px; height:280px;
+      border-radius:50%; background:rgba(255,255,255,.08); filter:blur(8px);
+    }
+    .hero-copy { width:58%; position:relative; z-index:2; }
+    .hero-pill {
+      display:inline-flex; align-items:center; gap:7px; padding:7px 12px; border-radius:999px;
+      font-size:11px; font-weight:800; background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.22); margin-bottom:15px;
+    }
+    .hero-pill i { color:#ffe20a; }
+    .hero-copy h1 { font-size:30px; line-height:1.08; font-weight:900; letter-spacing:-.045em; margin:0; }
+    .hero-copy p { margin:14px 0 18px; font-size:13px; line-height:1.55; color:rgba(255,255,255,.88); }
+    .hero-cta {
+      border:0; padding:12px 18px; border-radius:15px; background:#fff; color:#4821c7;
+      font-weight:900; box-shadow:0 10px 25px rgba(0,0,0,.15); cursor:pointer;
+    }
+    .hero-art { width:42%; height:240px; position:relative; }
+    .hero-glow { position:absolute; inset:10px; border-radius:50%; background:rgba(255,255,255,.13); filter:blur(24px); }
+    .house-icon {
+      position:absolute; right:40px; top:20px; width:110px; height:110px; border-radius:35px;
+      display:grid; place-items:center; font-size:64px; color:#fff;
+      background:linear-gradient(145deg,#a77aff,#5224d9); transform:rotate(-7deg);
+      box-shadow:0 22px 45px rgba(21,4,103,.28);
+    }
+    .credit-card-art {
+      position:absolute; right:8px; bottom:24px; width:170px; height:105px; border-radius:17px;
+      transform:rotate(-10deg); padding:18px; background:linear-gradient(135deg,#4420bd,#2b167c);
+      border:1px solid rgba(255,255,255,.22); box-shadow:0 25px 40px rgba(17,4,84,.35);
+    }
+    .chip { width:27px; height:20px; border-radius:6px; background:#ffd52c; }
+    .card-line { position:absolute; left:18px; bottom:17px; width:70px; height:5px; border-radius:4px; background:#7654de; }
+    .master-dot { position:absolute; bottom:18px; width:25px; height:25px; border-radius:50%; }
+    .master-dot.one { right:34px; background:#ffbf2f; opacity:.85; }
+    .master-dot.two { right:19px; background:#ff3c44; opacity:.9; }
+    .check-bubble {
+      position:absolute; right:0; bottom:92px; width:44px; height:44px; border-radius:50%;
+      background:#16d89a; color:#fff; display:grid; place-items:center; font-size:21px;
+      box-shadow:0 10px 22px rgba(0,0,0,.22); z-index:4;
+    }
+    .section-heading { display:flex; align-items:center; justify-content:space-between; padding:0 3px; }
+    .section-heading h2 { margin:0; font-size:23px; font-weight:900; letter-spacing:-.04em; color:#17183b; }
+    .section-heading button { border:0; background:none; color:#5420cc; font-weight:900; font-size:13px; cursor:pointer; }
+    .quick-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .quick-card {
+      min-height:185px; position:relative; text-align:left; border:1px solid rgba(32,32,70,.05);
+      border-radius:24px; padding:20px 16px; cursor:pointer; overflow:hidden;
+      box-shadow:0 8px 24px rgba(40,36,100,.06); transition:.2s ease;
+    }
+    .quick-card:after {
+      content:""; position:absolute; width:120px; height:120px; right:-40px; top:-40px;
+      border-radius:50%; background:rgba(255,255,255,.28);
+    }
+    .rent-card { background:linear-gradient(145deg,#fbf1ff,#f1e9ff); }
+    .transfer-card { background:linear-gradient(145deg,#eef8ff,#e7f1ff); }
+    .scan-card { background:linear-gradient(145deg,#e8fffb,#e0f8f5); }
+    .declaration-card { background:linear-gradient(145deg,#fff4e9,#fff0e7); }
+    .quick-icon {
+      display:grid; place-items:center; width:52px; height:52px; border-radius:18px;
+      background:rgba(255,255,255,.58); font-size:24px; margin-bottom:14px; position:relative; z-index:1;
+    }
+    .rent-card .quick-icon{color:#7134df}.transfer-card .quick-icon{color:#1673e8}
+    .scan-card .quick-icon{color:#00bfa0}.declaration-card .quick-icon{color:#f47b36}
+    .quick-title { display:block; font-size:17px; line-height:1.15; font-weight:900; color:#17183b; position:relative; z-index:1; }
+    .quick-desc { display:block; margin-top:8px; max-width:90%; font-size:11px; line-height:1.45; color:#6d6d84; position:relative; z-index:1; }
+    .quick-arrow {
+      position:absolute; right:13px; bottom:13px; width:38px; height:38px; border-radius:50%;
+      background:#fff; display:grid; place-items:center; box-shadow:0 6px 14px rgba(34,28,92,.08);
+      color:#5b2cd2; z-index:2;
+    }
+    .benefit-strip {
+      width:100%; display:flex; align-items:center; gap:13px; text-align:left; border:1px solid #e9e9f1;
+      border-radius:20px; padding:14px; background:#fff; box-shadow:0 8px 22px rgba(36,31,91,.05); cursor:pointer;
+    }
+    .benefit-icon { width:46px; height:46px; border-radius:16px; display:grid; place-items:center; background:#f0e9ff; color:#7134df; font-size:20px; flex:0 0 auto; }
+    .benefit-text { flex:1; display:flex; flex-direction:column; gap:2px; color:#242446; }
+    .benefit-text strong { font-size:12px; font-weight:900; }
+    .benefit-text small { font-size:10px; color:#77778e; }
+    .benefit-chevron { color:#252548; }
+    .trust-row { display:flex; justify-content:space-around; padding:3px 0 8px; color:#81819a; }
+    .trust-row div { display:flex; align-items:center; gap:6px; font-size:10px; font-weight:800; }
+    .trust-row i { color:#6333db; }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position:fixed; left:50%; bottom:0; transform:translateX(-50%); width:min(760px,100%);
+      height:78px; z-index:45; padding:9px 10px 10px; background:rgba(18,18,57,.98);
+      border-radius:24px 24px 0 0; display:grid; grid-template-columns:repeat(4,1fr);
+      box-shadow:0 -12px 30px rgba(25,21,73,.16);
+    }
+    .bottom-nav-item {
+      border:0; background:none; color:#a8a8c3; border-radius:18px; display:flex;
+      flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      font-size:10px; font-weight:800; cursor:pointer;
+    }
+    .bottom-nav-item i { font-size:19px; }
+    .bottom-nav-item.active { color:#fff; background:linear-gradient(135deg,#6931ee,#8545ff); box-shadow:0 8px 20px rgba(105,49,238,.32); }
+
+    #mobile-drawer { z-index:60 !important; }
+    #mobile-drawer > div:last-child { border-radius:28px 0 0 28px; }
+
+    @media (max-width:640px) {
+      .premium-header-inner { min-height:70px; padding:9px 15px; }
+      .premium-home { padding:12px 14px 18px; }
+      .premium-hero { min-height:305px; padding:22px 18px; border-radius:26px; }
+      .hero-copy { width:61%; }
+      .hero-copy h1 { font-size:25px; }
+      .hero-copy p { font-size:11px; }
+      .hero-art { width:39%; height:230px; }
+      .house-icon { width:82px; height:82px; right:18px; top:20px; font-size:45px; }
+      .credit-card-art { width:135px; height:84px; right:-5px; bottom:25px; }
+      .check-bubble { right:-5px; bottom:86px; width:38px; height:38px; font-size:17px; }
+      .quick-grid { gap:11px; }
+      .quick-card { min-height:176px; padding:17px 14px; border-radius:21px; }
+      .quick-title { font-size:15px; }
+      .quick-desc { font-size:10px; }
+      .quick-icon { width:48px; height:48px; }
+      .brand-copy strong { font-size:18px; }
+      .brand-logo { width:42px; height:42px; }
+    }
+  </style>
+
 </head>
 
 <body class="h-full font-sans antialiased bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-brand-500 selection:text-white">
 
-  <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-40 w-full glass-card border-b border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- QuickPay Logo -->
-        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-          <img src="logo-192.png" alt="QuickPay" class="w-10 h-10 rounded-xl object-contain shadow-lg shadow-brand-500/30">
-          <div>
-            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-accent bg-clip-text text-transparent">QuickPay</span>
-            <span class="block text-[10px] text-slate-400 font-medium tracking-wider uppercase -mt-1">Akash Patil Solution</span>
-          </div>
-        </div>
+  <!-- Premium App Header -->
+  <header class="app-ui premium-header">
+    <div class="premium-header-inner">
+      <button class="brand-area" onclick="navigateTo('home')" aria-label="QuickPay Home">
+        <img src="./icon-192.png" onerror="this.onerror=null;this.src='./icon-512.png';" alt="QuickPay" class="brand-logo">
+        <span class="brand-copy"><strong>QuickPay</strong><small>AKASH PATIL SOLUTION</small></span>
+      </button>
 
-        <!-- Only Notifications + Menu -->
-        <div class="flex items-center gap-2">
-          <button onclick="toggleNotifications()" aria-label="Notifications" class="relative p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
-            <i class="fa-solid fa-bell text-lg"></i>
-            <span id="notification-badge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[10px] font-black flex items-center justify-center border-2 border-slate-950">0</span>
-          </button>
-          <button onclick="toggleMobileDrawer()" aria-label="Menu" class="p-3 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
-            <i class="fa-solid fa-bars text-lg"></i>
-          </button>
-        </div>
+      <div class="header-actions">
+        <button onclick="toggleNotifications()" class="icon-btn notification-btn" aria-label="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span id="notification-badge" class="notification-dot hidden">0</span>
+        </button>
+        <button onclick="openPersonalDetails()" class="profile-avatar" aria-label="Profile">AP</button>
       </div>
     </div>
   </header>
 
   <!-- Notification Panel -->
-  <div id="notification-panel" class="fixed top-20 right-4 z-50 hidden w-[calc(100%-2rem)] max-w-sm glass-card rounded-2xl border border-slate-700 shadow-2xl overflow-hidden">
+  <div id="notification-panel" class="app-ui fixed top-20 right-4 z-50 hidden w-[calc(100%-2rem)] max-w-sm glass-card rounded-2xl border border-slate-700 shadow-2xl overflow-hidden">
     <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
       <div>
         <h3 class="font-bold text-white" data-i18n="notifications">Notifications</h3>
@@ -119,13 +310,13 @@
   </div>
 
   <!-- Mobile / Side Menu -->
-  <div id="mobile-drawer" class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="mobile-drawer" class="app-ui fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="toggleMobileDrawer()"></div>
     <div class="relative ml-auto w-[88%] max-w-sm bg-slate-900 border-l border-slate-800 h-full shadow-2xl p-6 flex flex-col justify-between z-10 overflow-y-auto">
       <div>
         <div class="flex items-center justify-between pb-6 border-b border-slate-800">
           <div class="flex items-center gap-2">
-            <img src="logo-192.png" alt="QuickPay" class="w-9 h-9 rounded-xl object-contain">
+            <img src="./icon-192.png" onerror="this.onerror=null;this.src='./icon-512.png';" alt="QuickPay" class="w-9 h-9 rounded-xl object-contain">
             <span class="font-bold text-white">QuickPay</span>
           </div>
           <button onclick="toggleMobileDrawer()" class="text-slate-400 hover:text-white p-2">
@@ -194,112 +385,80 @@
     </div>
   </div>
 
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="app-ui flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- 1. HOMEPAGE VIEW -->
-    <section id="section-home" class="space-y-10 animate-fade-in">
-      <!-- Hero Banner -->
-      <div class="relative rounded-3xl overflow-hidden glass-card p-8 sm:p-12 border border-slate-800 glow-effect">
-        <div class="absolute -right-20 -top-20 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div class="relative z-10 max-w-3xl">
-          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 text-xs font-bold mb-4">
-            <i class="fa-solid fa-bolt text-yellow-400"></i> Instant Credit Transfer
-          </span>
-          <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight" data-i18n="heroTitle">
-            Pay Rent with Credit Card Instantly - QuickPay
-          </h1>
-          <p class="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed" data-i18n="heroSub">
-            Seamlessly pay your home rent, transfer bank balance, and scan RuPay UPI QR codes with low service charges. Enjoy 45-50 days interest-free credit period on your credit cards.
-          </p>
+    <!-- 1. PREMIUM PHONEPE-STYLE HOME -->
+    <section id="section-home" class="premium-home space-y-6 animate-fade-in">
+      <div class="home-top-spacer"></div>
 
-          <div class="mt-8 flex flex-wrap gap-4">
-            <button onclick="navigateTo('rent')" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-sm font-bold text-white shadow-xl shadow-brand-600/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
-              <i class="fa-solid fa-building"></i> <span data-i18n="payRentNow">Pay House Rent Now</span>
-            </button>
-            <button onclick="navigateTo('rupay')" class="px-6 py-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 text-sm font-bold text-white border border-slate-700 transition-all flex items-center gap-2">
-              <i class="fa-solid fa-qrcode text-brand-400"></i> <span data-i18n="scanRupay">RuPay Scan & Pay</span>
-            </button>
+      <!-- Welcome / hero -->
+      <div class="premium-hero">
+        <div class="hero-copy">
+          <div class="hero-pill"><i class="fa-solid fa-bolt"></i> Instant Credit Transfer</div>
+          <h1>Pay Rent with<br>Credit Card Instantly</h1>
+          <p>Use your credit card to pay home rent, transfer bank balance and scan RuPay UPI QR codes with low charges.</p>
+          <button onclick="navigateTo('rent')" class="hero-cta">Get Started <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-glow"></div>
+          <div class="house-icon"><i class="fa-solid fa-house"></i></div>
+          <div class="credit-card-art">
+            <div class="chip"></div>
+            <div class="card-line"></div>
+            <div class="master-dot one"></div><div class="master-dot two"></div>
           </div>
+          <div class="check-bubble"><i class="fa-solid fa-check"></i></div>
         </div>
       </div>
 
-      <!-- Quick Feature Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Card 1 -->
-        <div onclick="navigateTo('rent')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center text-brand-400 text-xl mb-4 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-house-chimney"></i>
-          </div>
-          <h3 class="text-xl font-bold text-white" data-i18n="card1Title">Rent Payment</h3>
-          <p class="mt-2 text-sm text-slate-400" data-i18n="card1Desc">Pay rent to landlord's account with your Credit Card. Instant rent receipts with digital self-declaration generated.</p>
-          <div class="mt-4 text-xs font-bold text-brand-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Pay Now <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div onclick="navigateTo('transfer')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl mb-4 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-wallet"></i>
-          </div>
-          <h3 class="text-xl font-bold text-white" data-i18n="card2Title">Balance Transfer</h3>
-          <p class="mt-2 text-sm text-slate-400" data-i18n="card2Desc">Transfer money directly from your card/bank source to any bank account with standard transparent fee structures.</p>
-          <div class="mt-4 text-xs font-bold text-purple-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Transfer Money <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div onclick="navigateTo('rupay')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl mb-4 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-credit-card"></i>
-          </div>
-          <h3 class="text-xl font-bold text-white" data-i18n="card3Title">RuPay Scan & Pay</h3>
-          <p class="mt-2 text-sm text-slate-400" data-i18n="card3Desc">Scan any merchant UPI QR code and pay directly using your RuPay Credit Card smoothly without extra hassle.</p>
-          <div class="mt-4 text-xs font-bold text-emerald-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Scan QR Code <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </div>
-        </div>
+      <!-- Quick actions -->
+      <div class="section-heading">
+        <h2>Quick Actions</h2>
+        <button onclick="toggleMobileDrawer()">View All <i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
-      <!-- Quick Contact & Declaration Snippet -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 lg:col-span-1">
-          <h4 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-headset text-brand-400"></i> Quick Support
-          </h4>
-          <ul class="space-y-3 text-sm">
-            <li class="flex items-center gap-3 text-slate-300">
-              <i class="fa-solid fa-user-gear text-slate-500 w-5"></i>
-              <span><strong>Owner:</strong> Akash Patil</span>
-            </li>
-            <li class="flex items-center gap-3 text-slate-300">
-              <i class="fa-solid fa-phone text-slate-500 w-5"></i>
-              <span>+91 7020154072</span>
-            </li>
-            <li class="flex items-center gap-3 text-slate-300">
-              <i class="fa-solid fa-envelope text-slate-500 w-5"></i>
-              <span class="text-xs break-all">info@quickpay-akashpatil.in</span>
-            </li>
-            <li class="flex items-center gap-3 text-slate-300">
-              <i class="fa-solid fa-location-dot text-slate-500 w-5"></i>
-              <span>Dhule / Pune, Maharashtra - 424305</span>
-            </li>
-          </ul>
-        </div>
+      <div class="quick-grid">
+        <button onclick="navigateTo('rent')" class="quick-card rent-card">
+          <span class="quick-icon"><i class="fa-solid fa-house"></i></span>
+          <span class="quick-title">Rent Payment</span>
+          <span class="quick-desc">Pay rent to landlord's account with your Credit Card.</span>
+          <span class="quick-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
 
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 lg:col-span-2">
-          <h4 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-file-contract text-brand-400"></i> Instant Rent Declaration Snippet
-          </h4>
-          <p class="text-xs text-slate-400 mb-4">You can auto-generate legal digital self-declarations for HRA claiming and instant landlord rent payments.</p>
-          <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2 font-mono">
-            <p><strong>SELF DECLARATION FORMAT:</strong> "I hereby declare that I reside at the designated rented residential premises and the transfer of funds is solely for genuine residential rent payment..."</p>
-            <p class="text-brand-400">✓ Digital OTP Signature Verified | Legal HRA Receipt Generated Automatically</p>
-          </div>
-        </div>
+        <button onclick="navigateTo('transfer')" class="quick-card transfer-card">
+          <span class="quick-icon"><i class="fa-solid fa-wallet"></i></span>
+          <span class="quick-title">Balance Transfer</span>
+          <span class="quick-desc">Transfer money directly to any bank account.</span>
+          <span class="quick-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+
+        <button onclick="navigateTo('rupay')" class="quick-card scan-card">
+          <span class="quick-icon"><i class="fa-solid fa-qrcode"></i></span>
+          <span class="quick-title">RuPay Scan & Pay</span>
+          <span class="quick-desc">Scan a merchant QR and pay using your RuPay Credit Card.</span>
+          <span class="quick-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+
+        <button onclick="navigateTo('rent')" class="quick-card declaration-card">
+          <span class="quick-icon"><i class="fa-solid fa-file-signature"></i></span>
+          <span class="quick-title">Instant Rent Declaration</span>
+          <span class="quick-desc">Generate your digital rent self-declaration and receipt.</span>
+          <span class="quick-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+      </div>
+
+      <!-- Info strip -->
+      <button onclick="navigateTo('policies')" class="benefit-strip">
+        <span class="benefit-icon"><i class="fa-solid fa-gift"></i></span>
+        <span class="benefit-text"><strong>Enjoy 45–50 days interest-free</strong><small>credit period on eligible credit cards.</small></span>
+        <i class="fa-solid fa-chevron-right benefit-chevron"></i>
+      </button>
+
+      <!-- Trust row -->
+      <div class="trust-row">
+        <div><i class="fa-solid fa-shield-halved"></i><span>Secure</span></div>
+        <div><i class="fa-solid fa-bolt"></i><span>Fast</span></div>
+        <div><i class="fa-solid fa-headset"></i><span>Support</span></div>
       </div>
     </section>
 
@@ -706,10 +865,10 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-slate-950 border-t border-slate-900 py-8 text-slate-500 text-xs mt-12">
+  <footer class="app-ui bg-slate-950 border-t border-slate-900 py-8 text-slate-500 text-xs mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <img src="logo-192.png" alt="QuickPay" class="w-7 h-7 rounded object-contain">
+        <img src="./icon-192.png" onerror="this.onerror=null;this.src='./icon-512.png';" alt="QuickPay" class="w-7 h-7 rounded object-contain">
         <span class="font-bold text-slate-300">QuickPay - Akash Patil Solution</span>
       </div>
       <div class="flex flex-wrap gap-4 text-[11px]">
@@ -722,16 +881,16 @@
     </div>
   </footer>
 
-  <!-- Mobile OTP Login Modal -->
-  <div id="auth-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
-    <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md"></div>
-    <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 overflow-hidden z-10 glow-effect">
-      <button onclick="closeAuthModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+  <!-- Full-screen Mobile OTP Login Page -->
+  <div id="auth-modal" class="auth-screen hidden" aria-label="QuickPay Login">
+    <div class="auth-backdrop"></div>
+    <div class="auth-card">
+      <button onclick="closeAuthModal()" class="auth-close" aria-label="Close login">
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
 
       <div class="text-center mb-6">
-        <img src="logo-192.png" alt="QuickPay" class="w-16 h-16 rounded-2xl object-contain mx-auto mb-4">
+        <img src="./icon-192.png" onerror="this.onerror=null;this.src='./icon-512.png';" alt="QuickPay" class="w-16 h-16 rounded-2xl object-contain mx-auto mb-4">
         <h3 class="text-xl font-black text-white">Login to QuickPay</h3>
         <p class="text-xs text-slate-400 mt-1">Mobile number verification</p>
       </div>
@@ -779,7 +938,7 @@
     <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md"></div>
     <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 z-10 glow-effect">
       <div class="text-center">
-        <img src="logo-192.png" alt="QuickPay" class="w-16 h-16 rounded-2xl object-contain mx-auto mb-4">
+        <img src="./icon-192.png" onerror="this.onerror=null;this.src='./icon-512.png';" alt="QuickPay" class="w-16 h-16 rounded-2xl object-contain mx-auto mb-4">
         <h3 class="text-2xl font-black text-white">Choose App Language</h3>
         <p class="text-sm text-slate-400 mt-2">Select the language you want to use in QuickPay.</p>
       </div>
@@ -801,7 +960,7 @@
     <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md" onclick="closeSimpleModal('personal-modal')"></div>
     <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 z-10">
       <button onclick="closeSimpleModal('personal-modal')" class="absolute right-5 top-5 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      <img src="logo-192.png" alt="QuickPay" class="w-12 h-12 rounded-xl object-contain mb-4">
+      <img src="./icon-192.png" onerror="this.onerror=null;this.src='./icon-512.png';" alt="QuickPay" class="w-12 h-12 rounded-xl object-contain mb-4">
       <h3 class="text-xl font-black text-white" data-i18n="personalDetails">Personal Details</h3>
       <div class="mt-5 space-y-3 text-sm">
         <div class="flex justify-between gap-4 p-3 rounded-xl bg-slate-950 border border-slate-800">
@@ -834,7 +993,13 @@
   <!-- Firebase SDK Imports -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getAuth,
+      RecaptchaVerifier,
+      signInWithPhoneNumber,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
     // Provided Firebase Credentials
     const firebaseConfig = {
@@ -851,12 +1016,17 @@
     window.firebaseAuth = auth;
     window.RecaptchaVerifier = RecaptchaVerifier;
     window.signInWithPhoneNumber = signInWithPhoneNumber;
+    window.firebaseSignOut = () => signOut(auth);
+    window.firebaseOnAuthStateChanged = (callback) => onAuthStateChanged(auth, callback);
+    window.dispatchEvent(new Event("quickpay-firebase-ready"));
   </script>
 
   <script>
     // Global Application State
     let currentLanguage = localStorage.getItem('quickpay_language') || null; // selected after first OTP login
-    let currentUser = JSON.parse(localStorage.getItem('quickpay_user')) || null;
+    // Firebase Auth is the source of truth. localStorage is only used for non-sensitive UI preferences.
+    let currentUser = null;
+    let authReady = false;
     let confirmationResult = null;
     let recaptchaVerifier = null;
     let notifications = JSON.parse(localStorage.getItem('quickpay_notifications') || '[]');
@@ -950,36 +1120,96 @@
       }
     };
 
-    // Navigation Control
-    function navigateTo(sectionId) {
-      const sections = ['home', 'rent', 'transfer', 'rupay', 'policies', 'contact'];
-      sections.forEach(sec => {
-        const el = document.getElementById(`section-${sec}`);
-        const navBtn = document.getElementById(`nav-${sec}`);
-        if (el) el.classList.add('hidden');
-        if (navBtn) {
-          navBtn.classList.remove('bg-brand-600', 'text-white');
-          navBtn.classList.add('text-slate-400');
+    // ================================
+    // AUTH + NAVIGATION
+    // ================================
+
+    const PROTECTED_SECTIONS = ['home', 'rent', 'transfer', 'rupay', 'policies', 'contact'];
+
+    function setAppVisibility(isLoggedIn) {
+      document.body.classList.add('auth-ready');
+      document.body.classList.toggle('auth-locked', !isLoggedIn);
+      const login = document.getElementById('auth-modal');
+
+      if (isLoggedIn) {
+        login?.classList.add('hidden');
+        login?.classList.remove('auth-visible');
+        updateAuthStateUI();
+        applyLanguage();
+      } else {
+        login?.classList.remove('hidden');
+        login?.classList.add('auth-visible');
+        updateAuthStateUI();
+        backToPhoneStep();
+      }
+    }
+
+    function initFirebaseAuthListener() {
+      if (!window.firebaseAuth || !window.firebaseOnAuthStateChanged || authReady) return;
+
+      window.firebaseOnAuthStateChanged((user) => {
+        authReady = true;
+
+        if (user) {
+          const phone = (user.phoneNumber || '').replace('+91', '');
+          currentUser = {
+            mobile: phone,
+            uid: user.uid,
+            loggedInAt: localStorage.getItem('quickpay_logged_in_at') || new Date().toISOString()
+          };
+          localStorage.setItem('quickpay_user', JSON.stringify(currentUser));
+          localStorage.setItem('quickpay_logged_in_at', currentUser.loggedInAt);
+
+          setAppVisibility(true);
+          navigateTo('home');
+
+          if (!currentLanguage) {
+            setTimeout(showLanguageChooser, 250);
+          }
+        } else {
+          currentUser = null;
+          localStorage.removeItem('quickpay_user');
+          localStorage.removeItem('quickpay_logged_in_at');
+          setAppVisibility(false);
         }
+      });
+    }
+
+    window.addEventListener('quickpay-firebase-ready', initFirebaseAuthListener);
+    if (window.firebaseAuth) initFirebaseAuthListener();
+
+    function navigateTo(sectionId) {
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
+
+      if (!PROTECTED_SECTIONS.includes(sectionId)) sectionId = 'home';
+
+      PROTECTED_SECTIONS.forEach(sec => {
+        const el = document.getElementById(`section-${sec}`);
+        if (el) el.classList.add('hidden');
       });
 
       const activeEl = document.getElementById(`section-${sectionId}`);
-      const activeNav = document.getElementById(`nav-${sectionId}`);
       if (activeEl) activeEl.classList.remove('hidden');
-      if (activeNav) {
-        activeNav.classList.add('bg-brand-600', 'text-white');
-        activeNav.classList.remove('text-slate-400');
-      }
+
+      // Bottom navigation state
+      document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      const activeBottom = document.querySelector(`[data-bottom-nav="${sectionId}"]`);
+      if (activeBottom) activeBottom.classList.add('active');
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Toggle Drawer
     function toggleMobileDrawer() {
       const drawer = document.getElementById('mobile-drawer');
+      if (!drawer) return;
       drawer.classList.toggle('translate-x-full');
     }
 
-    // Language
     function applyLanguage() {
       if (!currentLanguage) return;
       document.documentElement.lang = currentLanguage === 'mr' ? 'mr' : 'en';
@@ -995,43 +1225,48 @@
       currentLanguage = language === 'mr' ? 'mr' : 'en';
       localStorage.setItem('quickpay_language', currentLanguage);
       applyLanguage();
-      document.getElementById('language-modal').classList.add('hidden');
+      document.getElementById('language-modal')?.classList.add('hidden');
       updateAuthStateUI();
       renderNotifications();
     }
 
     function showLanguageChooser() {
-      document.getElementById('language-modal').classList.remove('hidden');
+      if (!currentUser) return;
+      document.getElementById('language-modal')?.classList.remove('hidden');
     }
 
-    // Policy Tab Navigation
     function switchPolicyTab(tabKey) {
       document.querySelectorAll('.policy-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.policy-tab-btn').forEach(btn => {
         btn.classList.remove('bg-brand-600', 'text-white');
         btn.classList.add('bg-slate-800', 'text-slate-400');
       });
-
-      document.getElementById(`policy-content-${tabKey}`).classList.remove('hidden');
+      document.getElementById(`policy-content-${tabKey}`)?.classList.remove('hidden');
       const activeTabBtn = document.getElementById(`tab-${tabKey}`);
-      activeTabBtn.classList.add('bg-brand-600', 'text-white');
-      activeTabBtn.classList.remove('bg-slate-800', 'text-slate-400');
+      activeTabBtn?.classList.add('bg-brand-600', 'text-white');
+      activeTabBtn?.classList.remove('bg-slate-800', 'text-slate-400');
     }
 
     function openAuthModal() {
-      document.getElementById('auth-modal').classList.remove('hidden');
+      if (currentUser) return;
+      const modal = document.getElementById('auth-modal');
+      modal?.classList.remove('hidden');
+      modal?.classList.add('auth-visible');
       backToPhoneStep();
-      document.getElementById('user-mobile').focus();
+      setTimeout(() => document.getElementById('user-mobile')?.focus(), 100);
     }
 
     function closeAuthModal() {
-      document.getElementById('auth-modal').classList.add('hidden');
+      // Login page must not be dismissible while logged out.
+      if (!currentUser) return;
+      document.getElementById('auth-modal')?.classList.add('hidden');
     }
 
     function backToPhoneStep() {
-      document.getElementById('auth-step-phone').classList.remove('hidden');
-      document.getElementById('auth-step-otp').classList.add('hidden');
-      document.getElementById('otp-input').value = '';
+      document.getElementById('auth-step-phone')?.classList.remove('hidden');
+      document.getElementById('auth-step-otp')?.classList.add('hidden');
+      const otp = document.getElementById('otp-input');
+      if (otp) otp.value = '';
     }
 
     async function sendOTP() {
@@ -1052,12 +1287,16 @@
           throw new Error('Firebase Phone Authentication is not available.');
         }
 
-        if (!recaptchaVerifier) {
-          recaptchaVerifier = new window.RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
-            size: 'invisible'
-          });
-          window.recaptchaVerifier = recaptchaVerifier;
-        }
+        // Always create a fresh invisible reCAPTCHA after a failed attempt.
+        try {
+          if (recaptchaVerifier) recaptchaVerifier.clear();
+        } catch (_) {}
+        recaptchaVerifier = new window.RecaptchaVerifier(
+          window.firebaseAuth,
+          'recaptcha-container',
+          { size: 'invisible' }
+        );
+        window.recaptchaVerifier = recaptchaVerifier;
 
         confirmationResult = await window.signInWithPhoneNumber(
           window.firebaseAuth,
@@ -1071,13 +1310,9 @@
         document.getElementById('otp-input').focus();
       } catch (error) {
         console.error('OTP send error:', error);
-        try {
-          if (recaptchaVerifier) {
-            recaptchaVerifier.clear();
-            recaptchaVerifier = null;
-            window.recaptchaVerifier = null;
-          }
-        } catch (_) {}
+        try { recaptchaVerifier?.clear(); } catch (_) {}
+        recaptchaVerifier = null;
+        window.recaptchaVerifier = null;
         alert(`OTP could not be sent. ${error?.message || 'Please check Firebase Phone Authentication and Authorized Domains.'}`);
       } finally {
         sendBtn.disabled = false;
@@ -1106,7 +1341,11 @@
 
       try {
         const result = await confirmationResult.confirm(otp);
-        const verifiedMobile = result?.user?.phoneNumber?.replace('+91', '') || mobile;
+        const user = result?.user;
+
+        if (!user) throw new Error('Firebase did not return a verified user.');
+
+        const verifiedMobile = (user.phoneNumber || `+91${mobile}`).replace('+91', '');
         completeLogin(verifiedMobile);
       } catch (error) {
         console.error('OTP verification error:', error);
@@ -1118,37 +1357,53 @@
     }
 
     function completeLogin(mobile) {
+      // Firebase signInWithPhoneNumber.confirm() has already authenticated the user.
       currentUser = {
-        mobile: mobile,
+        mobile,
         uid: window.firebaseAuth?.currentUser?.uid || null,
         loggedInAt: new Date().toISOString()
       };
+
       localStorage.setItem('quickpay_user', JSON.stringify(currentUser));
+      localStorage.setItem('quickpay_logged_in_at', currentUser.loggedInAt);
       updateAuthStateUI();
       closeAuthModal();
 
       addNotification(
         currentLanguage === 'mr' ? 'लॉगिन यशस्वी' : 'Login successful',
-        currentLanguage === 'mr' ? 'तुमचे QuickPay खाते पडताळले गेले आहे.' : 'Your QuickPay account has been verified.'
+        currentLanguage === 'mr'
+          ? 'तुमचे QuickPay खाते पडताळले गेले आहे.'
+          : 'Your QuickPay account has been verified.'
       );
 
-      if (!currentLanguage) {
-        showLanguageChooser();
-      }
+      setAppVisibility(true);
+      navigateTo('home');
+
+      if (!currentLanguage) showLanguageChooser();
     }
 
     async function logout() {
       try {
-        if (window.firebaseAuth?.signOut) await window.firebaseAuth.signOut();
-      } catch (_) {}
+        if (window.firebaseSignOut) {
+          await window.firebaseSignOut();
+        } else if (window.firebaseAuth) {
+          throw new Error('Firebase signOut is not ready.');
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Logout failed. Please try again.');
+        return;
+      }
 
       currentUser = null;
       confirmationResult = null;
+      try { recaptchaVerifier?.clear(); } catch (_) {}
+      recaptchaVerifier = null;
       localStorage.removeItem('quickpay_user');
-      updateAuthStateUI();
+      localStorage.removeItem('quickpay_logged_in_at');
       closeSimpleModal('settings-modal');
       toggleMobileDrawerIfOpen();
-      alert(currentLanguage === 'mr' ? 'तुम्ही यशस्वीरित्या लॉग आउट झाला आहात.' : 'Logged out successfully.');
+      setAppVisibility(false);
     }
 
     function updateAuthStateUI() {
@@ -1159,15 +1414,15 @@
       const personalMobile = document.getElementById('personal-mobile');
 
       if (currentUser) {
-        if (drawerUser) drawerUser.classList.remove('hidden');
-        if (drawerLogout) drawerLogout.classList.remove('hidden');
-        if (drawerLogin) drawerLogin.classList.add('hidden');
+        drawerUser?.classList.remove('hidden');
+        drawerLogout?.classList.remove('hidden');
+        drawerLogin?.classList.add('hidden');
         if (drawerPhone) drawerPhone.innerText = `+91 ${currentUser.mobile}`;
         if (personalMobile) personalMobile.innerText = `+91 ${currentUser.mobile}`;
       } else {
-        if (drawerUser) drawerUser.classList.add('hidden');
-        if (drawerLogout) drawerLogout.classList.add('hidden');
-        if (drawerLogin) drawerLogin.classList.remove('hidden');
+        drawerUser?.classList.add('hidden');
+        drawerLogout?.classList.add('hidden');
+        drawerLogin?.classList.remove('hidden');
         if (personalMobile) personalMobile.innerText = 'Not logged in';
       }
     }
@@ -1194,8 +1449,8 @@
           navigator.serviceWorker?.ready.then(reg => {
             reg.showNotification(title, {
               body: message,
-              icon: 'logo-192.png',
-              badge: 'logo-192.png',
+              icon: 'icon-192.png',
+              badge: 'icon-192.png',
               tag: 'quickpay'
             });
           });
@@ -1280,6 +1535,10 @@
 
     function openSettings() {
       toggleMobileDrawerIfOpen();
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
       document.getElementById('settings-modal').classList.remove('hidden');
     }
 
@@ -1384,14 +1643,41 @@
     }
 
     // App Initialization
-    window.onload = function() {
-      // Set Today's Date in Declaration
+    window.addEventListener('load', () => {
       const dateInput = document.getElementById('decl-date');
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
-      
+
+      document.body.classList.add('auth-ready');
       updateAuthStateUI();
-      navigateTo('home');
-    };
+      renderNotifications();
+
+      // Keep the login gate visible until Firebase confirms the session.
+      if (!authReady) setAppVisibility(false);
+
+      // Register the PWA service worker.
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(() => console.log('QuickPay service worker registered'))
+          .catch((error) => console.warn('QuickPay service worker registration failed:', error));
+      }
+    });
   </script>
+
+  <!-- Premium Bottom Navigation -->
+  <nav class="app-ui bottom-nav" aria-label="QuickPay navigation">
+    <button class="bottom-nav-item active" data-bottom-nav="home" onclick="navigateTo('home')">
+      <i class="fa-solid fa-house"></i><span>Home</span>
+    </button>
+    <button class="bottom-nav-item" data-bottom-nav="rent" onclick="navigateTo('rent')">
+      <i class="fa-solid fa-clock-rotate-left"></i><span>Transactions</span>
+    </button>
+    <button class="bottom-nav-item" data-bottom-nav="contact" onclick="navigateTo('contact')">
+      <i class="fa-solid fa-headset"></i><span>Support</span>
+    </button>
+    <button class="bottom-nav-item" onclick="openPersonalDetails()">
+      <i class="fa-regular fa-user"></i><span>Profile</span>
+    </button>
+  </nav>
+
 </body>
 </html>
