@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-slate-900 text-slate-100">
 <head>
@@ -7,6 +6,10 @@
   <title>QuickPay - Pay Rent with Credit Card | क्विकपे</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#050b1d" />
+  <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png" />
+  <link rel="apple-touch-icon" href="logo-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -75,45 +78,22 @@
   <header class="sticky top-0 z-40 w-full glass-card border-b border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
-        <!-- Brand Logo -->
+        <!-- QuickPay Logo -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-accent flex items-center justify-center font-black text-xl text-white shadow-lg shadow-brand-500/30">
-            Q
-          </div>
+          <img src="logo-192.png" alt="QuickPay" class="w-10 h-10 rounded-xl object-contain shadow-lg shadow-brand-500/30">
           <div>
             <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-accent bg-clip-text text-transparent">QuickPay</span>
             <span class="block text-[10px] text-slate-400 font-medium tracking-wider uppercase -mt-1">Akash Patil Solution</span>
           </div>
         </div>
 
-        <!-- Desktop Navigation Items -->
-        <nav class="hidden md:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-full border border-slate-800">
-          <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-full text-xs font-semibold transition-all">Home</button>
-          <button onclick="navigateTo('rent')" id="nav-rent" class="nav-btn px-4 py-2 rounded-full text-xs font-semibold transition-all">Rent Payment</button>
-          <button onclick="navigateTo('transfer')" id="nav-transfer" class="nav-btn px-4 py-2 rounded-full text-xs font-semibold transition-all">Balance Transfer</button>
-          <button onclick="navigateTo('rupay')" id="nav-rupay" class="nav-btn px-4 py-2 rounded-full text-xs font-semibold transition-all">RuPay Scan & Pay</button>
-          <button onclick="navigateTo('policies')" id="nav-policies" class="nav-btn px-4 py-2 rounded-full text-xs font-semibold transition-all">Policies & Legal</button>
-          <button onclick="navigateTo('contact')" id="nav-contact" class="nav-btn px-4 py-2 rounded-full text-xs font-semibold transition-all">Contact Us</button>
-        </nav>
-
-        <!-- Right Header Actions (Language Toggle & Profile/Login) -->
-        <div class="flex items-center gap-3">
-          <!-- Language Switcher -->
-          <button onclick="toggleLanguage()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold border border-slate-700 text-brand-300 flex items-center gap-1.5 transition-all">
-            <i class="fa-solid font-bold fa-language text-sm"></i>
-            <span id="lang-indicator">मराठी</span>
+        <!-- Only Notifications + Menu -->
+        <div class="flex items-center gap-2">
+          <button onclick="toggleNotifications()" aria-label="Notifications" class="relative p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
+            <i class="fa-solid fa-bell text-lg"></i>
+            <span id="notification-badge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[10px] font-black flex items-center justify-center border-2 border-slate-950">0</span>
           </button>
-
-          <!-- User Profile / Auth State Button -->
-          <div id="auth-header-container">
-            <button onclick="openAuthModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-xs font-bold text-white shadow-md shadow-brand-600/30 transition-all flex items-center gap-2">
-              <i class="fa-solid fa-right-to-bracket"></i>
-              <span data-i18n="login">Login / Sign Up</span>
-            </button>
-          </div>
-
-          <!-- Mobile Drawer Toggle -->
-          <button onclick="toggleMobileDrawer()" class="md:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
+          <button onclick="toggleMobileDrawer()" aria-label="Menu" class="p-3 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
             <i class="fa-solid fa-bars text-lg"></i>
           </button>
         </div>
@@ -121,18 +101,41 @@
     </div>
   </header>
 
-  <!-- Mobile Side Drawer Overlay & Panel -->
-  <div id="mobile-drawer" class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex justify-end">
+  <!-- Notification Panel -->
+  <div id="notification-panel" class="fixed top-20 right-4 z-50 hidden w-[calc(100%-2rem)] max-w-sm glass-card rounded-2xl border border-slate-700 shadow-2xl overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+      <div>
+        <h3 class="font-bold text-white" data-i18n="notifications">Notifications</h3>
+        <p class="text-[10px] text-slate-500" data-i18n="notificationSub">Your QuickPay notifications</p>
+      </div>
+      <button onclick="clearNotifications()" class="text-[10px] font-bold text-brand-400 hover:text-brand-300" data-i18n="clearAll">Clear all</button>
+    </div>
+    <div id="notification-list" class="max-h-80 overflow-y-auto p-2">
+      <div id="empty-notifications" class="px-4 py-8 text-center text-xs text-slate-500">
+        <i class="fa-regular fa-bell-slash text-2xl mb-2"></i>
+        <p data-i18n="noNotifications">No new notifications</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile / Side Menu -->
+  <div id="mobile-drawer" class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="toggleMobileDrawer()"></div>
-    <div class="relative w-4/5 max-w-xs bg-slate-900 border-l border-slate-800 h-full shadow-2xl p-6 flex flex-col justify-between z-10">
+    <div class="relative ml-auto w-[88%] max-w-sm bg-slate-900 border-l border-slate-800 h-full shadow-2xl p-6 flex flex-col justify-between z-10 overflow-y-auto">
       <div>
         <div class="flex items-center justify-between pb-6 border-b border-slate-800">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center font-bold text-white text-base">Q</div>
+            <img src="logo-192.png" alt="QuickPay" class="w-9 h-9 rounded-xl object-contain">
             <span class="font-bold text-white">QuickPay</span>
           </div>
           <button onclick="toggleMobileDrawer()" class="text-slate-400 hover:text-white p-2">
             <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <div id="drawer-login-area" class="mt-5">
+          <button onclick="openAuthModal(); toggleMobileDrawer()" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-sm font-bold text-white shadow-lg shadow-brand-600/20">
+            <i class="fa-solid fa-right-to-bracket mr-2"></i><span data-i18n="login">Login / Sign Up</span>
           </button>
         </div>
 
@@ -149,29 +152,43 @@
           <button onclick="navigateTo('rupay'); toggleMobileDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">
             <i class="fa-solid fa-qrcode w-5 text-brand-500"></i> <span data-i18n="navRupay">RuPay Scan & Pay</span>
           </button>
-          <button onclick="navigateTo('policies'); toggleMobileDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">
-            <i class="fa-solid fa-file-shield w-5 text-brand-500"></i> <span data-i18n="navPolicies">Policies & Legal</span>
+
+          <div class="my-2 border-t border-slate-800"></div>
+
+          <!-- Personal Details -->
+          <button onclick="openPersonalDetails()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">
+            <i class="fa-solid fa-user w-5 text-brand-500"></i> <span data-i18n="personalDetails">Personal Details</span>
           </button>
+
+          <!-- Settings -->
+          <button onclick="openSettings()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">
+            <i class="fa-solid fa-gear w-5 text-brand-500"></i> <span data-i18n="settings">Settings</span>
+          </button>
+
+          <!-- Legal -->
+          <button onclick="navigateTo('policies'); toggleMobileDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">
+            <i class="fa-solid fa-file-shield w-5 text-brand-500"></i> <span data-i18n="legal">Legal</span>
+          </button>
+
+          <!-- Support -->
           <button onclick="navigateTo('contact'); toggleMobileDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">
-            <i class="fa-solid fa-headset w-5 text-brand-500"></i> <span data-i18n="navContact">Contact Us</span>
+            <i class="fa-solid fa-headset w-5 text-brand-500"></i> <span data-i18n="support">Support</span>
           </button>
         </nav>
       </div>
 
-      <div class="pt-6 border-t border-slate-800">
-        <div id="drawer-user-info" class="hidden flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-brand-400 font-bold">
-              <i class="fa-solid fa-user"></i>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-white" id="drawer-user-phone">+91 7020154072</p>
-              <p class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Verified</p>
-            </div>
+      <div class="pt-6 mt-6 border-t border-slate-800">
+        <div id="drawer-user-info" class="hidden flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-brand-400 font-bold">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-white" id="drawer-user-phone">+91</p>
+            <p class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> <span data-i18n="verified">Verified</span></p>
           </div>
         </div>
         <button id="drawer-logout-btn" onclick="logout(); toggleMobileDrawer()" class="hidden w-full py-2.5 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all border border-red-500/20">
-          <i class="fa-solid fa-right-from-bracket mr-2"></i> Log Out
+          <i class="fa-solid fa-right-from-bracket mr-2"></i><span data-i18n="logout">Log Out</span>
         </button>
       </div>
     </div>
@@ -692,7 +709,7 @@
   <footer class="bg-slate-950 border-t border-slate-900 py-8 text-slate-500 text-xs mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded bg-brand-600 flex items-center justify-center font-black text-white text-xs">Q</div>
+        <img src="logo-192.png" alt="QuickPay" class="w-7 h-7 rounded object-contain">
         <span class="font-bold text-slate-300">QuickPay - Akash Patil Solution</span>
       </div>
       <div class="flex flex-wrap gap-4 text-[11px]">
@@ -705,57 +722,110 @@
     </div>
   </footer>
 
-  <!-- CRED-Style Mobile Auth Modal -->
-  <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-    <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md" onclick="closeAuthModal()"></div>
+  <!-- Mobile OTP Login Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md"></div>
     <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 overflow-hidden z-10 glow-effect">
       <button onclick="closeAuthModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
 
-      <!-- Recaptcha Container for Firebase -->
+      <div class="text-center mb-6">
+        <img src="logo-192.png" alt="QuickPay" class="w-16 h-16 rounded-2xl object-contain mx-auto mb-4">
+        <h3 class="text-xl font-black text-white">Login to QuickPay</h3>
+        <p class="text-xs text-slate-400 mt-1">Mobile number verification</p>
+      </div>
+
       <div id="recaptcha-container"></div>
 
-      <!-- Step 1: Phone Number Input -->
-      <div id="auth-step-phone" class="space-y-6">
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-2xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center text-brand-400 text-2xl mx-auto mb-3">
-            <i class="fa-solid fa-mobile-screen"></i>
-          </div>
-          <h3 class="text-xl font-black text-white">Login to QuickPay</h3>
-          <p class="text-xs text-slate-400 mt-1">CRED-style instant Mobile OTP Verification</p>
-        </div>
-
+      <!-- Step 1 -->
+      <div id="auth-step-phone" class="space-y-5">
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Mobile Number</label>
           <div class="relative flex items-center">
             <span class="absolute left-3 text-sm font-bold text-slate-400">+91</span>
-            <input type="tel" id="user-mobile" maxlength="10" placeholder="7020154072" class="w-full pl-12 pr-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold text-base focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <input type="tel" id="user-mobile" maxlength="10" inputmode="numeric" autocomplete="tel" placeholder="Enter 10-digit mobile number" class="w-full pl-12 pr-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold text-base focus:outline-none focus:ring-2 focus:ring-brand-500" />
           </div>
         </div>
-
-        <button onclick="sendOTP()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 text-sm font-bold text-white shadow-lg shadow-brand-600/30 transition-all">
+        <button onclick="sendOTP()" id="send-otp-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 text-sm font-bold text-white shadow-lg shadow-brand-600/30 transition-all">
           Get OTP <i class="fa-solid fa-arrow-right ml-1"></i>
         </button>
       </div>
 
-      <!-- Step 2: OTP Verification Input -->
-      <div id="auth-step-otp" class="hidden space-y-6">
+      <!-- Step 2 -->
+      <div id="auth-step-otp" class="hidden space-y-5">
         <div class="text-center">
           <div class="w-12 h-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mx-auto mb-3">
             <i class="fa-solid fa-shield-halved"></i>
           </div>
           <h3 class="text-xl font-black text-white">Enter OTP</h3>
-          <p class="text-xs text-slate-400 mt-1">Sent to <strong id="display-target-mobile" class="text-slate-200">+91 7020154072</strong></p>
+          <p class="text-xs text-slate-400 mt-1">OTP sent to <strong id="display-target-mobile" class="text-slate-200">+91</strong></p>
         </div>
-
         <div>
-          <input type="text" id="otp-input" maxlength="6" placeholder="• • • • • •" class="w-full text-center tracking-[1em] py-3 bg-slate-950 border border-slate-700 rounded-xl text-white font-black text-xl focus:outline-none focus:ring-2 focus:ring-brand-500" />
-          <p class="text-[10px] text-center text-slate-500 mt-2">Demo Simulation OTP Code: <strong class="text-brand-400">123456</strong></p>
+          <input type="text" id="otp-input" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter 6-digit OTP" class="w-full text-center tracking-[0.7em] py-3 bg-slate-950 border border-slate-700 rounded-xl text-white font-black text-xl focus:outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
-
-        <button onclick="verifyOTP()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-sm font-bold text-white shadow-lg shadow-emerald-600/30 transition-all">
+        <button onclick="verifyOTP()" id="verify-otp-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-sm font-bold text-white shadow-lg shadow-emerald-600/30 transition-all">
           Verify & Log In <i class="fa-solid fa-check-circle ml-1"></i>
+        </button>
+        <button onclick="backToPhoneStep()" class="w-full text-xs font-semibold text-slate-400 hover:text-white">
+          Change mobile number
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- First-login language selection -->
+  <div id="language-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 z-10 glow-effect">
+      <div class="text-center">
+        <img src="logo-192.png" alt="QuickPay" class="w-16 h-16 rounded-2xl object-contain mx-auto mb-4">
+        <h3 class="text-2xl font-black text-white">Choose App Language</h3>
+        <p class="text-sm text-slate-400 mt-2">Select the language you want to use in QuickPay.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mt-7">
+        <button onclick="selectLanguage('en')" class="py-4 rounded-2xl bg-slate-800 hover:bg-brand-600 border border-slate-700 hover:border-brand-400 transition-all text-white font-bold">
+          <span class="block text-lg">English</span>
+          <span class="text-[10px] text-slate-400">English</span>
+        </button>
+        <button onclick="selectLanguage('mr')" class="py-4 rounded-2xl bg-slate-800 hover:bg-brand-600 border border-slate-700 hover:border-brand-400 transition-all text-white font-bold">
+          <span class="block text-lg">मराठी</span>
+          <span class="text-[10px] text-slate-400">Marathi</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal Details Modal -->
+  <div id="personal-modal" class="fixed inset-0 z-[55] hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md" onclick="closeSimpleModal('personal-modal')"></div>
+    <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 z-10">
+      <button onclick="closeSimpleModal('personal-modal')" class="absolute right-5 top-5 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <img src="logo-192.png" alt="QuickPay" class="w-12 h-12 rounded-xl object-contain mb-4">
+      <h3 class="text-xl font-black text-white" data-i18n="personalDetails">Personal Details</h3>
+      <div class="mt-5 space-y-3 text-sm">
+        <div class="flex justify-between gap-4 p-3 rounded-xl bg-slate-950 border border-slate-800">
+          <span class="text-slate-400">Mobile</span><strong id="personal-mobile" class="text-white">Not logged in</strong>
+        </div>
+        <div class="flex justify-between gap-4 p-3 rounded-xl bg-slate-950 border border-slate-800">
+          <span class="text-slate-400">Account status</span><strong class="text-emerald-400">OTP Verified</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="fixed inset-0 z-[55] hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md" onclick="closeSimpleModal('settings-modal')"></div>
+    <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 z-10">
+      <button onclick="closeSimpleModal('settings-modal')" class="absolute right-5 top-5 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-xl font-black text-white" data-i18n="settings">Settings</h3>
+      <div class="mt-5 space-y-3">
+        <button onclick="selectLanguage(currentLanguage === 'en' ? 'mr' : 'en'); closeSimpleModal('settings-modal')" class="w-full text-left p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-500">
+          <i class="fa-solid fa-language text-brand-400 mr-2"></i><span data-i18n="changeLanguage">Change language</span>
+        </button>
+        <button onclick="logout()" class="w-full text-left p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20">
+          <i class="fa-solid fa-right-from-bracket mr-2"></i><span data-i18n="logout">Log Out</span>
         </button>
       </div>
     </div>
@@ -785,9 +855,11 @@
 
   <script>
     // Global Application State
-    let currentLanguage = 'en'; // 'en' or 'mr'
+    let currentLanguage = localStorage.getItem('quickpay_language') || null; // selected after first OTP login
     let currentUser = JSON.parse(localStorage.getItem('quickpay_user')) || null;
     let confirmationResult = null;
+    let recaptchaVerifier = null;
+    let notifications = JSON.parse(localStorage.getItem('quickpay_notifications') || '[]');
     let userIP = '103.21.124.89'; // Fallback IP
 
     // Fetch User IP
@@ -800,6 +872,17 @@
     const translations = {
       en: {
         login: "Login / Sign Up",
+        notifications: "Notifications",
+        notificationSub: "Your QuickPay notifications",
+        clearAll: "Clear all",
+        noNotifications: "No new notifications",
+        personalDetails: "Personal Details",
+        settings: "Settings",
+        legal: "Legal",
+        support: "Support",
+        logout: "Log Out",
+        verified: "Verified",
+        changeLanguage: "Change language",
         navHome: "Home",
         navRent: "Rent Payment",
         navTransfer: "Balance Transfer",
@@ -827,7 +910,18 @@
         contactSub: "Have queries or need assistance? Reach out to our dedicated support team."
       },
       mr: {
-        login: "लॉगिन / सायनिंग",
+        login: "लॉगिन / साइन अप",
+        notifications: "सूचना",
+        notificationSub: "तुमच्या QuickPay सूचना",
+        clearAll: "सर्व साफ करा",
+        noNotifications: "नवीन सूचना नाहीत",
+        personalDetails: "वैयक्तिक माहिती",
+        settings: "सेटिंग्ज",
+        legal: "कायदेशीर",
+        support: "सपोर्ट",
+        logout: "लॉग आउट",
+        verified: "पडताळलेले",
+        changeLanguage: "भाषा बदला",
         navHome: "मुख्यपृष्ठ",
         navRent: "घरभाडे पेमेंट",
         navTransfer: "बॅलन्स ट्रान्सफर",
@@ -885,18 +979,29 @@
       drawer.classList.toggle('translate-x-full');
     }
 
-    // Toggle Language
-    function toggleLanguage() {
-      currentLanguage = currentLanguage === 'en' ? 'mr' : 'en';
-      document.getElementById('lang-indicator').innerText = currentLanguage === 'en' ? 'मराठी' : 'English';
-      
-      // Update Text Elements
+    // Language
+    function applyLanguage() {
+      if (!currentLanguage) return;
+      document.documentElement.lang = currentLanguage === 'mr' ? 'mr' : 'en';
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[currentLanguage][key]) {
+        if (translations[currentLanguage] && translations[currentLanguage][key]) {
           el.innerText = translations[currentLanguage][key];
         }
       });
+    }
+
+    function selectLanguage(language) {
+      currentLanguage = language === 'mr' ? 'mr' : 'en';
+      localStorage.setItem('quickpay_language', currentLanguage);
+      applyLanguage();
+      document.getElementById('language-modal').classList.add('hidden');
+      updateAuthStateUI();
+      renderNotifications();
+    }
+
+    function showLanguageChooser() {
+      document.getElementById('language-modal').classList.remove('hidden');
     }
 
     // Policy Tab Navigation
@@ -915,121 +1020,271 @@
 
     function openAuthModal() {
       document.getElementById('auth-modal').classList.remove('hidden');
-      document.getElementById('auth-step-phone').classList.remove('hidden');
-      document.getElementById('auth-step-otp').classList.add('hidden');
+      backToPhoneStep();
+      document.getElementById('user-mobile').focus();
     }
 
     function closeAuthModal() {
       document.getElementById('auth-modal').classList.add('hidden');
     }
 
-    function sendOTP() {
-      const mobile = document.getElementById('user-mobile').value.trim();
-      if (mobile.length !== 10) {
-        alert('Please enter a valid 10-digit mobile number');
+    function backToPhoneStep() {
+      document.getElementById('auth-step-phone').classList.remove('hidden');
+      document.getElementById('auth-step-otp').classList.add('hidden');
+      document.getElementById('otp-input').value = '';
+    }
+
+    async function sendOTP() {
+      const mobile = document.getElementById('user-mobile').value.trim().replace(/\D/g, '');
+      const sendBtn = document.getElementById('send-otp-btn');
+
+      if (!/^[6-9]\d{9}$/.test(mobile)) {
+        alert('Please enter a valid 10-digit Indian mobile number.');
         return;
       }
 
       document.getElementById('display-target-mobile').innerText = `+91 ${mobile}`;
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = 'Sending OTP... <i class="fa-solid fa-spinner fa-spin ml-1"></i>';
 
-      // Firebase Phone Auth Setup with Fallback Simulation
       try {
-        if (window.firebaseAuth && window.RecaptchaVerifier) {
-          if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new window.RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
-              'size': 'invisible'
-            });
-          }
-          window.signInWithPhoneNumber(window.firebaseAuth, `+91${mobile}`, window.recaptchaVerifier)
-            .then(res => {
-              window.confirmationResult = res;
-            })
-            .catch(err => {
-              console.warn('Firebase OTP failed, falling back to instant simulation:', err);
-            });
+        if (!window.firebaseAuth || !window.RecaptchaVerifier || !window.signInWithPhoneNumber) {
+          throw new Error('Firebase Phone Authentication is not available.');
         }
-      } catch (e) {
-        console.warn('Firebase error fallback:', e);
-      }
 
-      // Switch to OTP step
-      document.getElementById('auth-step-phone').classList.add('hidden');
-      document.getElementById('auth-step-otp').classList.remove('hidden');
+        if (!recaptchaVerifier) {
+          recaptchaVerifier = new window.RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
+            size: 'invisible'
+          });
+          window.recaptchaVerifier = recaptchaVerifier;
+        }
+
+        confirmationResult = await window.signInWithPhoneNumber(
+          window.firebaseAuth,
+          `+91${mobile}`,
+          recaptchaVerifier
+        );
+        window.confirmationResult = confirmationResult;
+
+        document.getElementById('auth-step-phone').classList.add('hidden');
+        document.getElementById('auth-step-otp').classList.remove('hidden');
+        document.getElementById('otp-input').focus();
+      } catch (error) {
+        console.error('OTP send error:', error);
+        try {
+          if (recaptchaVerifier) {
+            recaptchaVerifier.clear();
+            recaptchaVerifier = null;
+            window.recaptchaVerifier = null;
+          }
+        } catch (_) {}
+        alert(`OTP could not be sent. ${error?.message || 'Please check Firebase Phone Authentication and Authorized Domains.'}`);
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = 'Get OTP <i class="fa-solid fa-arrow-right ml-1"></i>';
+      }
     }
 
-    function verifyOTP() {
+    async function verifyOTP() {
       const otp = document.getElementById('otp-input').value.trim();
-      const mobile = document.getElementById('user-mobile').value.trim();
+      const mobile = document.getElementById('user-mobile').value.trim().replace(/\D/g, '');
+      const verifyBtn = document.getElementById('verify-otp-btn');
 
-      if (otp.length < 6) {
-        alert('Please enter valid 6-digit OTP');
+      if (!/^\d{6}$/.test(otp)) {
+        alert('Please enter the 6-digit OTP.');
         return;
       }
 
-      // Verify OTP via Firebase or fallback
-      if (window.confirmationResult) {
-        window.confirmationResult.confirm(otp)
-          .then(result => {
-            completeLogin(mobile || '7020154072');
-          })
-          .catch(err => {
-            // Fallback for simulation code 123456
-            if (otp === '123456') {
-              completeLogin(mobile || '7020154072');
-            } else {
-              alert('Invalid OTP. Use demo code: 123456');
-            }
-          });
-      } else {
-        if (otp === '123456' || otp.length === 6) {
-          completeLogin(mobile || '7020154072');
-        } else {
-          alert('Invalid OTP. Use demo code: 123456');
-        }
+      if (!confirmationResult) {
+        alert('Please request a new OTP first.');
+        backToPhoneStep();
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      verifyBtn.innerHTML = 'Verifying... <i class="fa-solid fa-spinner fa-spin ml-1"></i>';
+
+      try {
+        const result = await confirmationResult.confirm(otp);
+        const verifiedMobile = result?.user?.phoneNumber?.replace('+91', '') || mobile;
+        completeLogin(verifiedMobile);
+      } catch (error) {
+        console.error('OTP verification error:', error);
+        alert('Invalid or expired OTP. Please request a new OTP and try again.');
+      } finally {
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = 'Verify & Log In <i class="fa-solid fa-check-circle ml-1"></i>';
       }
     }
 
     function completeLogin(mobile) {
-      currentUser = { mobile: mobile, loggedInAt: new Date().toISOString() };
+      currentUser = {
+        mobile: mobile,
+        uid: window.firebaseAuth?.currentUser?.uid || null,
+        loggedInAt: new Date().toISOString()
+      };
       localStorage.setItem('quickpay_user', JSON.stringify(currentUser));
       updateAuthStateUI();
       closeAuthModal();
-      alert(`Welcome to QuickPay! Logged in as +91 ${mobile}`);
+
+      addNotification(
+        currentLanguage === 'mr' ? 'लॉगिन यशस्वी' : 'Login successful',
+        currentLanguage === 'mr' ? 'तुमचे QuickPay खाते पडताळले गेले आहे.' : 'Your QuickPay account has been verified.'
+      );
+
+      if (!currentLanguage) {
+        showLanguageChooser();
+      }
     }
 
-    function logout() {
+    async function logout() {
+      try {
+        if (window.firebaseAuth?.signOut) await window.firebaseAuth.signOut();
+      } catch (_) {}
+
       currentUser = null;
+      confirmationResult = null;
       localStorage.removeItem('quickpay_user');
       updateAuthStateUI();
-      alert('Logged out successfully');
+      closeSimpleModal('settings-modal');
+      toggleMobileDrawerIfOpen();
+      alert(currentLanguage === 'mr' ? 'तुम्ही यशस्वीरित्या लॉग आउट झाला आहात.' : 'Logged out successfully.');
     }
 
     function updateAuthStateUI() {
-      const authContainer = document.getElementById('auth-header-container');
       const drawerUser = document.getElementById('drawer-user-info');
       const drawerLogout = document.getElementById('drawer-logout-btn');
+      const drawerLogin = document.getElementById('drawer-login-area');
       const drawerPhone = document.getElementById('drawer-user-phone');
+      const personalMobile = document.getElementById('personal-mobile');
 
       if (currentUser) {
-        authContainer.innerHTML = `
-          <button onclick="logout()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-2">
-            <i class="fa-solid fa-user-check text-emerald-400"></i>
-            <span>+91 ${currentUser.mobile}</span>
-          </button>
-        `;
         if (drawerUser) drawerUser.classList.remove('hidden');
         if (drawerLogout) drawerLogout.classList.remove('hidden');
+        if (drawerLogin) drawerLogin.classList.add('hidden');
         if (drawerPhone) drawerPhone.innerText = `+91 ${currentUser.mobile}`;
+        if (personalMobile) personalMobile.innerText = `+91 ${currentUser.mobile}`;
       } else {
-        authContainer.innerHTML = `
-          <button onclick="openAuthModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 text-xs font-bold text-white shadow-md shadow-brand-600/30 flex items-center gap-2">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            <span data-i18n="login">${translations[currentLanguage].login}</span>
-          </button>
-        `;
         if (drawerUser) drawerUser.classList.add('hidden');
         if (drawerLogout) drawerLogout.classList.add('hidden');
+        if (drawerLogin) drawerLogin.classList.remove('hidden');
+        if (personalMobile) personalMobile.innerText = 'Not logged in';
       }
+    }
+
+    function toggleNotifications() {
+      document.getElementById('notification-panel').classList.toggle('hidden');
+      renderNotifications();
+    }
+
+    function addNotification(title, message) {
+      notifications.unshift({
+        id: Date.now(),
+        title,
+        message,
+        time: new Date().toLocaleString(),
+        read: false
+      });
+      notifications = notifications.slice(0, 50);
+      localStorage.setItem('quickpay_notifications', JSON.stringify(notifications));
+      renderNotifications();
+
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          navigator.serviceWorker?.ready.then(reg => {
+            reg.showNotification(title, {
+              body: message,
+              icon: 'logo-192.png',
+              badge: 'logo-192.png',
+              tag: 'quickpay'
+            });
+          });
+        } catch (_) {}
+      }
+    }
+
+    function renderNotifications() {
+      const list = document.getElementById('notification-list');
+      const badge = document.getElementById('notification-badge');
+      const empty = document.getElementById('empty-notifications');
+      if (!list || !badge) return;
+
+      const unread = notifications.filter(n => !n.read).length;
+      badge.innerText = unread > 99 ? '99+' : unread;
+      badge.classList.toggle('hidden', unread === 0);
+
+      list.querySelectorAll('.notification-item').forEach(el => el.remove());
+
+      if (!notifications.length) {
+        if (empty) empty.classList.remove('hidden');
+        return;
+      }
+      if (empty) empty.classList.add('hidden');
+
+      notifications.forEach(n => {
+        const item = document.createElement('button');
+        item.className = 'notification-item w-full text-left p-3 rounded-xl hover:bg-slate-800 transition-all mb-1';
+        item.innerHTML = `
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-600/20 text-brand-400 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-white">${escapeHtml(n.title)}</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">${escapeHtml(n.message)}</p>
+              <p class="text-[9px] text-slate-600 mt-1">${escapeHtml(n.time)}</p>
+            </div>
+          </div>`;
+        item.onclick = () => {
+          n.read = true;
+          localStorage.setItem('quickpay_notifications', JSON.stringify(notifications));
+          renderNotifications();
+        };
+        list.appendChild(item);
+      });
+    }
+
+    function clearNotifications() {
+      notifications = [];
+      localStorage.setItem('quickpay_notifications', '[]');
+      renderNotifications();
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, c => ({
+        '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+      }[c]));
+    }
+
+    function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().catch(() => {});
+      }
+    }
+
+    function toggleMobileDrawerIfOpen() {
+      const drawer = document.getElementById('mobile-drawer');
+      if (drawer && !drawer.classList.contains('translate-x-full')) {
+        drawer.classList.add('translate-x-full');
+      }
+    }
+
+    function openPersonalDetails() {
+      toggleMobileDrawerIfOpen();
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
+      document.getElementById('personal-modal').classList.remove('hidden');
+    }
+
+    function openSettings() {
+      toggleMobileDrawerIfOpen();
+      document.getElementById('settings-modal').classList.remove('hidden');
+    }
+
+    function closeSimpleModal(id) {
+      document.getElementById(id)?.classList.add('hidden');
     }
 
     function calculateRentConvenienceFee() {
@@ -1140,4 +1395,3 @@
   </script>
 </body>
 </html>
-```
