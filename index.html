@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <title>QuickPay - Akash Patil</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f3f4f6;color:#111827}
+.topbar{height:64px;background:#111827;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:10px}.brand small{display:block;color:#9ca3af;font-size:11px}
+.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#f59e0b,#ef4444);font-weight:800}
+.container{max-width:1000px;margin:auto;padding:20px}.screen{min-height:calc(100vh - 64px);display:grid;place-items:center;padding:20px}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(17,24,39,.08);margin-bottom:18px}
+.auth-card{width:min(430px,100%)}.hero-icon{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;background:#111827;color:#fff;font-size:30px;font-weight:800;margin-bottom:15px}
+.auth-card h1{margin:0 0 5px}.muted{color:#6b7280}
+.phone-row{display:flex;border:1px solid #d1d5db;border-radius:12px;overflow:hidden;margin:8px 0 14px}
+.phone-row span{padding:12px;background:#f9fafb}.phone-row input{border:0!important;border-radius:0!important;flex:1}
+.grid{display:grid;gap:15px}.three{grid-template-columns:repeat(3,1fr)}
+.feature{border:0;background:#fff;border-radius:18px;padding:20px;text-align:left;box-shadow:0 8px 30px rgba(17,24,39,.07);cursor:pointer}
+.feature span{font-size:28px;display:block;margin-bottom:12px}.feature b,.feature small{display:block}.feature small{color:#6b7280;margin-top:5px}
+label{display:block;font-weight:600;font-size:14px;margin:13px 0}
+input,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:11px;font:inherit;margin-top:6px;background:#fff}
+textarea{min-height:90px;resize:vertical}.primary{width:100%;padding:13px;border:0;border-radius:11px;background:#111827;color:#fff;font-weight:700;cursor:pointer;margin-top:8px}
+.ghost,.back{border:0;background:transparent;color:inherit;cursor:pointer}.back{color:#111827;padding:0 0 12px}
+.hidden{display:none!important}.welcome{display:flex;align-items:center;justify-content:space-between}.welcome h2{margin:2px 0 0}
+.verified{background:#dcfce7;color:#166534;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.choice{display:flex;gap:15px;flex-wrap:wrap}.choice label{font-weight:500}.choice input,.check input{width:auto;margin-right:6px}
+.declaration{background:#f9fafb;border:1px dashed #9ca3af;padding:15px;border-radius:12px}.msg{min-height:20px;margin-top:10px;font-size:14px}
+.links{display:flex;gap:12px;flex-wrap:wrap}.links a{color:#111827}.info{margin-top:18px}
+.notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;padding:12px;border-radius:12px;margin:12px 0}
+.amount-box{background:#f9fafb;border-radius:14px;padding:14px;margin:15px 0}.amount-row{display:flex;justify-content:space-between;margin:7px 0}.total{font-size:20px;font-weight:800;border-top:1px solid #e5e7eb;padding-top:10px}
+#qr-reader{max-width:500px;margin:auto}
+@media(max-width:720px){.three{grid-template-columns:1fr}.container{padding:14px}.card{padding:16px}.welcome{align-items:flex-start;gap:10px}.links{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">QP</span><div><b>QuickPay</b><small>Akash Patil</small></div></div>
+  <button id="logoutBtn" class="ghost hidden">Logout</button>
+</header>
+
+<main>
+  <section id="loginView" class="screen">
+    <div class="card auth-card">
+      <div class="hero-icon">₹</div>
+      <h1>Welcome to QuickPay</h1>
+      <p class="muted">Secure mobile verification with Firebase OTP.</p>
+      <label>Mobile Number</label>
+      <div class="phone-row"><span>+91</span><input id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
+      <div id="recaptcha-container"></div>
+      <button id="sendOtpBtn" class="primary">Send OTP</button>
+      <div id="otpBox" class="hidden">
+        <label>Enter OTP</label>
+        <input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit OTP">
+        <button id="verifyOtpBtn" class="primary">Verify & Login</button>
+      </div>
+      <p id="authMsg" class="msg"></p>
+    </div>
+  </section>
+
+  <section id="appView" class="hidden">
+    <div class="container">
+      <div class="welcome card">
+        <div><small class="muted">Logged in as</small><h2 id="userPhone">+91</h2></div>
+        <span class="verified">✓ Verified</span>
+      </div>
+
+      <div class="grid three">
+        <button class="feature" data-page="rentPage"><span>🏠</span><b>Home Rent</b><small>Rent payment with declaration</small></button>
+        <button class="feature" data-page="balancePage"><span>↔️</span><b>Balance Transfer</b><small>Transfer request</small></button>
+        <button class="feature" data-page="upiPage"><span>▣</span><b>Scan UPI / RuPay</b><small>Scan and continue</small></button>
+      </div>
+
+      <section id="rentPage" class="page hidden">
+        <button class="back" data-home>← Home</button>
+        <div class="card">
+          <h2>Rent Payment</h2>
+          <p class="muted">Enter rent details and choose an agreement or self-declaration.</p>
+          <form id="rentForm">
+            <label>Rent Amount (₹)<input id="rentAmount" type="number" min="1" step="0.01" required></label>
+            <label>Tenant Name<input id="tenantName" required></label>
+            <label>Rental Address<textarea id="rentalAddress" required></textarea></label>
+            <label>Landlord Name<input id="landlordName" required></label>
+            <label>Landlord Bank Account Number<input id="landlordAccount" inputmode="numeric" required></label>
+            <label>IFSC Code<input id="landlordIfsc" required></label>
+            <div class="choice"><label><input type="radio" name="rentProof" value="agreement" checked> Upload Rent Agreement</label><label><input type="radio" name="rentProof" value="declaration"> Use Self-Declaration</label></div>
+            <div id="agreementBox"><label>Rent Agreement<input id="agreementFile" type="file" accept=".pdf,.jpg,.jpeg,.png"></label></div>
+            <div id="declarationBox" class="hidden">
+              <div class="declaration">
+                <h3>RENT SELF-DECLARATION FORM</h3>
+                <p>Date: <b id="declDate"></b></p>
+                <p>I confirm the above payment is genuine rent.</p>
+                <label class="check"><input id="declAgree" type="checkbox"> I Agree and accept this as my digital signature.</label>
+                <p class="muted">OTP verification is performed by Firebase Authentication.</p>
+              </div>
+            </div>
+            <label class="check"><input id="rentConsent" type="checkbox" required> I confirm the rent information is genuine and accurate.</label>
+            <button class="primary" type="submit">Continue to Pay</button>
+            <p id="rentMsg" class="msg"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="balancePage" class="page hidden">
+        <button class="back" data-home>← Home</button>
+        <div class="card">
+          <h2>Balance Transfer</h2>
+          <p class="muted">Submit a transfer request. Final availability and processing depend on the configured payment provider and applicable rules.</p>
+          <form id="balanceForm">
+            <label>Amount (₹)<input id="btAmount" type="number" min="1" step="0.01" required></label>
+            <label>Beneficiary Name<input id="btName" required></label>
+            <label>Bank Account Number<input id="btAccount" inputmode="numeric" required></label>
+            <label>IFSC<input id="btIfsc" required></label>
+            <button class="primary" type="submit">Submit Transfer Request</button>
+            <p id="balanceMsg" class="msg"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="upiPage" class="page hidden">
+        <button class="back" data-home>← Home</button>
+        <div class="card">
+          <h2>Scan UPI / RuPay</h2>
+          <p class="muted">Scan a UPI QR and open the detected UPI link. RuPay credit-card-on-UPI support is subject to the issuer, network and payment provider.</p>
+          <div id="qr-reader"></div>
+          <button id="startScanBtn" class="primary">Start QR Scanner</button>
+          <p id="upiResult" class="msg"></p>
+        </div>
+      </section>
+
+      <section class="card info">
+        <h3>QuickPay - Akash Patil</h3>
+        <p>Pay Rent with Credit Card Instantly - QuickPay, Rent Payment, Balance Transfer, RuPay Scan & Pay.</p>
+        <p>📞 7020154072 &nbsp; ✉️ info@quickpay-akashpatil.in</p>
+        <div class="links">
+          <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="refund.html">Cancellation & Refund</a><a href="grievance.html">Grievance Redressal</a><a href="quickpay_policies.pdf">Policy PDF</a>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="app.js"></script>
+<script src="https://unpkg.com/html5-qrcode" defer></script>
+</body>
+</html>
